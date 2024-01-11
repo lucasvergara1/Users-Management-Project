@@ -1,14 +1,15 @@
 class UserController {
-    constructor(formId, tableId){
+
+    constructor (formId, tableId){
 
         this.formEl = document.getElementById(formId);
         this.tableEl = document.getElementById(tableId);
 
-        this.onSubmit();
+        this.onSubmit()
+
     }
 
     onSubmit(){
-
 
         this.formEl.addEventListener("submit", event => {
 
@@ -16,43 +17,54 @@ class UserController {
 
             let values = this.getValues();
 
-            this.getPhoto((content)=>{
+            this.getPhoto().then(
+                (content) => {
 
-                values.photo = content;
+                    values.photo = content;
 
-                this.addLine(values);
+                    this.addLine(values);
 
-            });
-
-
+                }, 
+                (e) => {
+                    console.error(e)
+                }
+            );
+        
         });
 
     }
 
-    getPhoto(callback){
+    getPhoto(){
 
-        let fileReader = new FileReader();
+        return new Promise((resolve, reject) => {
 
-        let elements = [...this.formEl.elements].filter(item=>{
+            let fileReader = new FileReader();
 
-            if (item.name === 'photo') { 
-                
-                return item;
-            }
+            let elements = [...this.formEl.elements].filter(item => {
+
+                if (item.name === 'photo') {
+                    return item;
+                }
+
+            });
+
+            let file = elements[0].files[0];
+
+            fileReader.onload = () => {
+
+                resolve(fileReader.result);
+
+            };
+
+            fileReader.onerror = (e) => {
+
+                reject(e);
+
+            };
+
+            fileReader.readAsDataURL(file);
+
         });
-
-        let file = (elements[0].files[0]);
-
-        fileReader.onload = ()=>{
-
-            callback(fileReader.result);
-
-
-
-        };
-
-        fileReader.readAsDataURL(file);
-
 
     }
 
@@ -64,7 +76,7 @@ class UserController {
 
             if (field.name === "gender") {
     
-                if (field.checked === true) {
+                if (field.checked) {
                     user[field.name] = field.value
                 }
     
@@ -75,7 +87,7 @@ class UserController {
             }
     
         });
-        
+    
         return new User(
             user.name, 
             user.gender, 
@@ -85,15 +97,16 @@ class UserController {
             user.password, 
             user.photo, 
             user.admin
-            );
+        );
 
     }
 
+    
     addLine(dataUser) {
 
         this.tableEl.innerHTML = `
             <tr>
-                <td><img src=${dataUser.photo} alt="User Image" class="img-circle img-sm"></td>
+                <td><img src=${dataUser.photo} class="img-circle img-sm"></td>
                 <td>${dataUser.name}</td>
                 <td>${dataUser.email}</td>
                 <td>${dataUser.admin}</td>
@@ -104,8 +117,8 @@ class UserController {
                 </td>
             </tr>
         `;
-    
+
     }
-    
+
 
 }
