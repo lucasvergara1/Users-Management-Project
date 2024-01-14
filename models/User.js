@@ -23,31 +23,31 @@ class User {
     }
 
     get gender(){
-        return this._name;
+        return this._gender;
     }
 
     get birth(){
-        return this._name;
+        return this._birth;
     }
 
     get country(){
-        return this._name;
+        return this._country;
     }
 
     get email(){
-        return this._name;
+        return this._email;
     }
 
     get password(){
-        return this._name;
+        return this._password;
     }
 
     get photo(){
-        return this._name;
+        return this._photo;
     }
 
     get admin(){
-        return this._name;
+        return this._admin;
     }
 
     set photo(value){
